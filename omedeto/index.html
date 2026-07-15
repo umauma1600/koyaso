@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>🎂🎉 こゃーそ生誕祭 🎉🎂</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    font-family: "Hiragino Maru Gothic ProN", "Yu Gothic", "Comic Sans MS", sans-serif;
+    cursor: pointer;
+  }
+
+  body {
+    background: linear-gradient(45deg, #ff9ff3, #feca57, #ff6b6b, #48dbfb, #1dd1a1, #f368e0);
+    background-size: 600% 600%;
+    animation: rainbow 8s ease infinite;
+  }
+
+  @keyframes rainbow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .marquee {
+    position: fixed;
+    left: 0;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    background: rgba(255,255,255,0.85);
+    font-size: 22px;
+    font-weight: bold;
+    padding: 6px 0;
+    z-index: 50;
+  }
+  .marquee.top { top: 0; }
+  .marquee.bottom { bottom: 0; }
+  .marquee span {
+    display: inline-block;
+    padding-left: 100%;
+    animation: scroll 12s linear infinite;
+  }
+  .marquee.bottom span { animation-duration: 9s; animation-direction: reverse; }
+  @keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+  }
+
+  .stage {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 24px;
+    padding: 60px 16px;
+  }
+
+  h1 {
+    font-size: clamp(32px, 8vw, 90px);
+    color: #fff;
+    text-shadow: 3px 3px 0 #ff6b81, -3px -3px 0 #5352ed, 0 0 24px rgba(255,255,255,.8);
+    animation: bounce 0.6s ease-in-out infinite alternate;
+    line-height: 1.3;
+  }
+  @keyframes bounce {
+    from { transform: scale(1) rotate(-2deg); }
+    to   { transform: scale(1.08) rotate(2deg); }
+  }
+
+  h1 .char { display: inline-block; animation: wave 1s ease-in-out infinite; }
+  @keyframes wave {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-18px); }
+  }
+
+  .sub {
+    font-size: clamp(18px, 3.5vw, 32px);
+    color: #fff;
+    font-weight: bold;
+    text-shadow: 2px 2px 0 rgba(0,0,0,0.25);
+    animation: pulse 1.2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+  }
+
+  .cake {
+    font-size: clamp(60px, 12vw, 140px);
+    animation: spin 4s linear infinite;
+    user-select: none;
+  }
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+
+  button.party {
+    font-size: clamp(18px, 3vw, 28px);
+    font-weight: bold;
+    padding: 14px 34px;
+    border: 4px dashed #fff;
+    border-radius: 999px;
+    background: #ff4757;
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 6px 0 #c0392b;
+    transition: transform 0.1s;
+    animation: wiggle 0.4s ease-in-out infinite;
+    font-family: inherit;
+  }
+  @keyframes wiggle {
+    0%, 100% { transform: rotate(-3deg); }
+    50% { transform: rotate(3deg); }
+  }
+  button.party:active { transform: translateY(4px); box-shadow: none; }
+
+  .counter {
+    color: #fff;
+    font-weight: bold;
+    font-size: clamp(14px, 2.5vw, 20px);
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.3);
+  }
+
+  .confetti {
+    position: fixed;
+    top: -10vh;
+    z-index: 40;
+    pointer-events: none;
+    animation-name: fall;
+    animation-timing-function: linear;
+    animation-iteration-count: 1;
+    user-select: none;
+  }
+  @keyframes fall {
+    to { transform: translateY(120vh) rotate(720deg); }
+  }
+
+  .toast {
+    position: fixed;
+    z-index: 60;
+    background: #fff;
+    border: 3px solid #ff6b81;
+    border-radius: 16px;
+    padding: 10px 18px;
+    font-weight: bold;
+    font-size: 18px;
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
+    animation: toastIn 0.3s ease, toastOut 0.4s ease 2.6s forwards;
+    pointer-events: none;
+  }
+  @keyframes toastIn {
+    from { transform: scale(0) rotate(-10deg); }
+    to   { transform: scale(1) rotate(0deg); }
+  }
+  @keyframes toastOut {
+    to { transform: scale(0) rotate(15deg); opacity: 0; }
+  }
+
+  .volume {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255,255,255,0.85);
+    border: 3px solid #ff6b81;
+    border-radius: 999px;
+    padding: 6px 16px;
+    box-shadow: 3px 3px 0 rgba(0,0,0,0.15);
+  }
+  .volume button {
+    font-size: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    line-height: 1;
+    font-family: inherit;
+  }
+  .volume input[type="range"] {
+    width: clamp(100px, 20vw, 180px);
+    accent-color: #ff4757;
+    cursor: pointer;
+  }
+
+  .trail {
+    position: fixed;
+    z-index: 70;
+    pointer-events: none;
+    font-size: 22px;
+    animation: trailFade 0.9s ease forwards;
+    user-select: none;
+  }
+  @keyframes trailFade {
+    to { transform: translateY(-40px) scale(0.2); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="marquee top"><span>🎉🎉🎉 祝!! こゃーそ様 御生誕!! 🎉🎉🎉 おめでとう!! おめでとう!! おめでとう!! 🎂 世界中がこの日を待っていた!! 🎂 こゃーそ!! こゃーそ!! こゃーそ!! 🎉🎉🎉</span></div>
+<div class="marquee bottom"><span>㊗️㊗️㊗️ HAPPY BIRTHDAY KOYASO ㊗️㊗️㊗️ 本日は晴天なり!! なぜならこゃーその誕生日だから!! 🥳🥳🥳 拍手!! 拍手!! スタンディングオベーション!! 👏👏👏</span></div>
+
+<div class="stage">
+  <div class="cake">🎂</div>
+  <h1 id="mainMsg">こゃーそ<br>お誕生日おめでとう！</h1>
+  <div class="sub">🎊 生まれてきてくれてありがとう!!!! 🎊</div>
+  <button class="party" id="partyBtn">🎉 もっと祝う 🎉</button>
+  <div class="counter">祝われた回数: <span id="count">0</span> 回</div>
+  <div class="volume">
+    <button id="muteBtn" title="ミュート切り替え">🔊</button>
+    <input type="range" id="volSlider" min="0" max="100" value="60" title="音量">
+  </div>
+</div>
+
+<audio id="song" src="birthday.mp3" preload="auto"></audio>
+
+<script>
+(function () {
+  // タイトルバーもうるさく
+  const titles = ["🎂🎉 こゃーそ生誕祭 🎉🎂", "㊗️㊗️ おめでとう!! ㊗️㊗️", "🥳 こゃーそ!! 🥳"];
+  let ti = 0;
+  setInterval(() => { document.title = titles[ti++ % titles.length]; }, 900);
+
+  // メイン文字を1文字ずつ揺らす
+  const h1 = document.getElementById("mainMsg");
+  h1.innerHTML = h1.innerHTML.split(/(<br>)/).map(part => {
+    if (part === "<br>") return part;
+    return [...part].map((c, i) =>
+      `<span class="char" style="animation-delay:${i * 0.08}s">${c}</span>`
+    ).join("");
+  }).join("");
+
+  // 紙吹雪
+  const emojis = ["🎉", "🎊", "🎂", "🥳", "✨", "🎈", "🍰", "💖", "⭐", "🎁"];
+  function confetti(n) {
+    for (let i = 0; i < n; i++) {
+      const el = document.createElement("div");
+      el.className = "confetti";
+      el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      el.style.left = Math.random() * 100 + "vw";
+      el.style.fontSize = 16 + Math.random() * 30 + "px";
+      el.style.animationDuration = 2.5 + Math.random() * 3 + "s";
+      document.body.appendChild(el);
+      el.addEventListener("animationend", () => el.remove());
+    }
+  }
+  confetti(30);
+  setInterval(() => confetti(6), 1200);
+
+  // うざいトースト
+  const messages = [
+    "おめでとう!!!!", "こゃーそ最高!!", "今日は何の日? こゃーその日!!",
+    "㊗️生誕㊗️", "ケーキ食べた?", "祝わせてくれてありがとう",
+    "こゃーそ!! こゃーそ!!", "パーティーは終わらない", "また祝ってしまった…",
+    "全人類が祝福しています", "🎂🎂🎂🎂🎂", "うれしい!! うれしい!!"
+  ];
+  function toast() {
+    const el = document.createElement("div");
+    el.className = "toast";
+    el.textContent = messages[Math.floor(Math.random() * messages.length)];
+    el.style.left = 5 + Math.random() * 70 + "vw";
+    el.style.top = 10 + Math.random() * 70 + "vh";
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 3200);
+  }
+  setInterval(toast, 2500);
+
+  // カーソルの軌跡
+  let lastTrail = 0;
+  document.addEventListener("pointermove", (e) => {
+    const now = Date.now();
+    if (now - lastTrail < 60) return;
+    lastTrail = now;
+    const el = document.createElement("div");
+    el.className = "trail";
+    el.textContent = ["✨", "💖", "🎉"][Math.floor(Math.random() * 3)];
+    el.style.left = e.clientX + "px";
+    el.style.top = e.clientY + "px";
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 900);
+  });
+
+  // 音量調整 (BGMメロディとMP3の両方に効く)
+  const song = document.getElementById("song");
+  const volSlider = document.getElementById("volSlider");
+  const muteBtn = document.getElementById("muteBtn");
+  let muted = false;
+
+  function updateSpeaker() {
+    const v = volSlider.value / 100;
+    muteBtn.textContent = (muted || v === 0) ? "🔇" : (v < 0.5 ? "🔉" : "🔊");
+  }
+  function applyVolume() {
+    const v = volSlider.value / 100;
+    song.volume = v;
+    song.muted = muted;
+    if (bgmGain) bgmGain.gain.value = muted ? 0 : v * 0.12;
+    updateSpeaker();
+  }
+
+  volSlider.addEventListener("input", () => { muted = false; applyVolume(); });
+  muteBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    muted = !muted;
+    applyVolume();
+  });
+  document.querySelector(".volume").addEventListener("click", (e) => e.stopPropagation());
+
+  // ハッピーバースデーのBGM (WebAudio) — ページを開いた時から繰り返し流れる
+  // 自動再生がブロックされている間は、最初のタップ/キー操作で開始
+  let audioCtx = null, bgmGain = null, bgmStarted = false;
+  const MELODY = [
+    [262, .3], [262, .2], [294, .5], [262, .5], [349, .5], [330, .9],
+    [262, .3], [262, .2], [294, .5], [262, .5], [392, .5], [349, .9],
+    [262, .3], [262, .2], [523, .5], [440, .5], [349, .5], [330, .5], [294, .9],
+    [466, .3], [466, .2], [440, .5], [349, .5], [392, .5], [349, .9]
+  ];
+
+  function ensureCtx() {
+    if (audioCtx) return;
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    bgmGain = audioCtx.createGain();
+    bgmGain.connect(audioCtx.destination);
+    applyVolume();
+  }
+
+  function scheduleMelody() {
+    let t = audioCtx.currentTime + 0.05;
+    for (const [freq, dur] of MELODY) {
+      const osc = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      osc.type = "triangle";
+      osc.frequency.value = freq;
+      g.gain.setValueAtTime(1, t);
+      g.gain.exponentialRampToValueAtTime(0.01, t + dur * 0.9);
+      osc.connect(g).connect(bgmGain);
+      osc.start(t);
+      osc.stop(t + dur);
+      t += dur;
+    }
+    const total = MELODY.reduce((sum, [, d]) => sum + d, 0);
+    setTimeout(scheduleMelody, (total + 1.5) * 1000);
+  }
+
+  function tryStartBgm() {
+    if (bgmStarted) return;
+    ensureCtx();
+    audioCtx.resume().then(() => {
+      if (audioCtx.state === "running" && !bgmStarted) {
+        bgmStarted = true;
+        scheduleMelody();
+      }
+    }).catch(() => {});
+  }
+  tryStartBgm();
+  document.addEventListener("pointerdown", tryStartBgm);
+  document.addEventListener("keydown", tryStartBgm);
+
+  // MP3はボタンを押した時だけ1回再生 (ループしない)
+  function playSong() {
+    if (muted) return;
+    song.currentTime = 0;
+    song.play().catch(() => {});
+  }
+
+  // 祝うボタン (たまに逃げる)
+  const btn = document.getElementById("partyBtn");
+  const countEl = document.getElementById("count");
+  let count = 0;
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    count++;
+    countEl.textContent = count;
+    confetti(40);
+    toast();
+    playSong();
+    if (count % 3 === 0) {
+      btn.style.position = "relative";
+      btn.style.left = (Math.random() * 120 - 60) + "px";
+      btn.style.top = (Math.random() * 40 - 20) + "px";
+      setTimeout(() => { btn.style.left = "0"; btn.style.top = "0"; }, 800);
+    }
+  });
+
+  // 画面のどこを押しても祝われる
+  document.body.addEventListener("click", () => confetti(15));
+})();
+</script>
+</body>
+</html>
