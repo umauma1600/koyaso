@@ -235,21 +235,26 @@
     line-height: 1.9;
     font-size: 15px;
   }
-  .omake .close {
-    display: block;
-    margin: 18px auto 0;
-    font-size: 18px;
+  .omake { position: relative; }
+  .omake .close-x {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    width: 40px;
+    height: 40px;
+    border: 3px solid #ff6b81;
+    border-radius: 50%;
+    background: #fff;
+    color: #ff4757;
+    font-size: 22px;
     font-weight: bold;
-    padding: 10px 30px;
-    border: 3px dashed #fff;
-    border-radius: 999px;
-    background: #ff4757;
-    color: #fff;
+    line-height: 1;
     cursor: pointer;
-    box-shadow: 0 4px 0 #c0392b;
+    box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
     font-family: inherit;
   }
-  .omake .close:active { transform: translateY(3px); box-shadow: none; }
+  .omake .close-x:hover { background: #ffe9ec; }
+  .omake .close-x:active { transform: translateY(2px); box-shadow: none; }
 
   .trail {
     position: fixed;
@@ -285,6 +290,7 @@
 
 <div class="omake-overlay" id="omakeOverlay">
   <div class="omake">
+    <button class="close-x" id="omakeClose" title="閉じる">✕</button>
     <h2>🎊 100回達成!! おまけ裏話 🎊</h2>
     <p>ここまで祝ってくれてありがとう!! ご褒美に、このサイトの裏話をどうぞ。</p>
     <p><b>このサイト、プロンプトこれだけで作ったよ。fableかしこすぎんか…</b></p>
@@ -306,7 +312,6 @@
       <li>画面のどこを押しても紙吹雪が出る</li>
       <li>そして「祝われた回数」カウンター…このおまけに気づいたあなたは100回も祝ってくれた人です</li>
     </ul>
-    <button class="close" id="omakeClose">🎉 閉じる 🎉</button>
   </div>
 </div>
 
