@@ -219,7 +219,7 @@
   </div>
 </div>
 
-<audio id="song" src="birthday.mp3" preload="auto" loop autoplay></audio>
+<audio id="song" src="birthday.mp3" preload="auto"></audio>
 
 <script>
 (function () {
@@ -287,42 +287,85 @@
     setTimeout(() => el.remove(), 900);
   });
 
-  // お祝いサウンド (MP3) + 音量調整
+  // 音量調整 (BGMメロディとMP3の両方に効く)
   const song = document.getElementById("song");
   const volSlider = document.getElementById("volSlider");
   const muteBtn = document.getElementById("muteBtn");
-  song.volume = volSlider.value / 100;
+  let muted = false;
 
-  function speakerIcon() {
-    if (song.muted || song.volume === 0) return "🔇";
-    return song.volume < 0.5 ? "🔉" : "🔊";
+  function updateSpeaker() {
+    const v = volSlider.value / 100;
+    muteBtn.textContent = (muted || v === 0) ? "🔇" : (v < 0.5 ? "🔉" : "🔊");
   }
-  function updateSpeaker() { muteBtn.textContent = speakerIcon(); }
-
-  volSlider.addEventListener("input", () => {
-    song.volume = volSlider.value / 100;
-    song.muted = false;
+  function applyVolume() {
+    const v = volSlider.value / 100;
+    song.volume = v;
+    song.muted = muted;
+    if (bgmGain) bgmGain.gain.value = muted ? 0 : v * 0.12;
     updateSpeaker();
-  });
+  }
+
+  volSlider.addEventListener("input", () => { muted = false; applyVolume(); });
   muteBtn.addEventListener("click", (e) => {
     e.stopPropagation();
-    song.muted = !song.muted;
-    updateSpeaker();
+    muted = !muted;
+    applyVolume();
   });
   document.querySelector(".volume").addEventListener("click", (e) => e.stopPropagation());
 
-  // 最初からBGMとして流す (自動再生がブロックされたら最初の操作で開始)
-  function startBgm() {
-    song.play().then(updateSpeaker).catch(() => {
-      const kick = () => { song.play().catch(() => {}); updateSpeaker(); };
-      document.addEventListener("pointerdown", kick, { once: true });
-      document.addEventListener("keydown", kick, { once: true });
-    });
-  }
-  startBgm();
+  // ハッピーバースデーのBGM (WebAudio) — ページを開いた時から繰り返し流れる
+  // 自動再生がブロックされている間は、最初のタップ/キー操作で開始
+  let audioCtx = null, bgmGain = null, bgmStarted = false;
+  const MELODY = [
+    [262, .3], [262, .2], [294, .5], [262, .5], [349, .5], [330, .9],
+    [262, .3], [262, .2], [294, .5], [262, .5], [392, .5], [349, .9],
+    [262, .3], [262, .2], [523, .5], [440, .5], [349, .5], [330, .5], [294, .9],
+    [466, .3], [466, .2], [440, .5], [349, .5], [392, .5], [349, .9]
+  ];
 
+  function ensureCtx() {
+    if (audioCtx) return;
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    bgmGain = audioCtx.createGain();
+    bgmGain.connect(audioCtx.destination);
+    applyVolume();
+  }
+
+  function scheduleMelody() {
+    let t = audioCtx.currentTime + 0.05;
+    for (const [freq, dur] of MELODY) {
+      const osc = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      osc.type = "triangle";
+      osc.frequency.value = freq;
+      g.gain.setValueAtTime(1, t);
+      g.gain.exponentialRampToValueAtTime(0.01, t + dur * 0.9);
+      osc.connect(g).connect(bgmGain);
+      osc.start(t);
+      osc.stop(t + dur);
+      t += dur;
+    }
+    const total = MELODY.reduce((sum, [, d]) => sum + d, 0);
+    setTimeout(scheduleMelody, (total + 1.5) * 1000);
+  }
+
+  function tryStartBgm() {
+    if (bgmStarted) return;
+    ensureCtx();
+    audioCtx.resume().then(() => {
+      if (audioCtx.state === "running" && !bgmStarted) {
+        bgmStarted = true;
+        scheduleMelody();
+      }
+    }).catch(() => {});
+  }
+  tryStartBgm();
+  document.addEventListener("pointerdown", tryStartBgm);
+  document.addEventListener("keydown", tryStartBgm);
+
+  // MP3はボタンを押した時だけ1回再生 (ループしない)
   function playSong() {
-    if (song.muted) return;
+    if (muted) return;
     song.currentTime = 0;
     song.play().catch(() => {});
   }
