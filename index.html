@@ -165,6 +165,30 @@
     to { transform: scale(0) rotate(15deg); opacity: 0; }
   }
 
+  .volume {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255,255,255,0.85);
+    border: 3px solid #ff6b81;
+    border-radius: 999px;
+    padding: 6px 16px;
+    box-shadow: 3px 3px 0 rgba(0,0,0,0.15);
+  }
+  .volume button {
+    font-size: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    line-height: 1;
+    font-family: inherit;
+  }
+  .volume input[type="range"] {
+    width: clamp(100px, 20vw, 180px);
+    accent-color: #ff4757;
+    cursor: pointer;
+  }
+
   .trail {
     position: fixed;
     z-index: 70;
@@ -189,7 +213,13 @@
   <div class="sub">🎊 生まれてきてくれてありがとう!!!! 🎊</div>
   <button class="party" id="partyBtn">🎉 もっと祝う 🎉</button>
   <div class="counter">祝われた回数: <span id="count">0</span> 回</div>
+  <div class="volume">
+    <button id="muteBtn" title="ミュート切り替え">🔊</button>
+    <input type="range" id="volSlider" min="0" max="100" value="60" title="音量">
+  </div>
 </div>
+
+<audio id="song" src="birthday.mp3" preload="auto" loop autoplay></audio>
 
 <script>
 (function () {
@@ -257,31 +287,44 @@
     setTimeout(() => el.remove(), 900);
   });
 
-  // ハッピーバースデーの曲 (WebAudio)
-  let audioCtx = null;
+  // お祝いサウンド (MP3) + 音量調整
+  const song = document.getElementById("song");
+  const volSlider = document.getElementById("volSlider");
+  const muteBtn = document.getElementById("muteBtn");
+  song.volume = volSlider.value / 100;
+
+  function speakerIcon() {
+    if (song.muted || song.volume === 0) return "🔇";
+    return song.volume < 0.5 ? "🔉" : "🔊";
+  }
+  function updateSpeaker() { muteBtn.textContent = speakerIcon(); }
+
+  volSlider.addEventListener("input", () => {
+    song.volume = volSlider.value / 100;
+    song.muted = false;
+    updateSpeaker();
+  });
+  muteBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    song.muted = !song.muted;
+    updateSpeaker();
+  });
+  document.querySelector(".volume").addEventListener("click", (e) => e.stopPropagation());
+
+  // 最初からBGMとして流す (自動再生がブロックされたら最初の操作で開始)
+  function startBgm() {
+    song.play().then(updateSpeaker).catch(() => {
+      const kick = () => { song.play().catch(() => {}); updateSpeaker(); };
+      document.addEventListener("pointerdown", kick, { once: true });
+      document.addEventListener("keydown", kick, { once: true });
+    });
+  }
+  startBgm();
+
   function playSong() {
-    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    if (audioCtx.state === "suspended") audioCtx.resume();
-    // ドドレドファミ ドドレドソファ ...
-    const notes = [
-      [262, .3], [262, .2], [294, .5], [262, .5], [349, .5], [330, .9],
-      [262, .3], [262, .2], [294, .5], [262, .5], [392, .5], [349, .9],
-      [262, .3], [262, .2], [523, .5], [440, .5], [349, .5], [330, .5], [294, .9],
-      [466, .3], [466, .2], [440, .5], [349, .5], [392, .5], [349, .9]
-    ];
-    let t = audioCtx.currentTime + 0.05;
-    for (const [freq, dur] of notes) {
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = "triangle";
-      osc.frequency.value = freq;
-      gain.gain.setValueAtTime(0.04, t);
-      gain.gain.exponentialRampToValueAtTime(0.001, t + dur * 0.9);
-      osc.connect(gain).connect(audioCtx.destination);
-      osc.start(t);
-      osc.stop(t + dur);
-      t += dur;
-    }
+    if (song.muted) return;
+    song.currentTime = 0;
+    song.play().catch(() => {});
   }
 
   // 祝うボタン (たまに逃げる)
